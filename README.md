@@ -1,4 +1,3 @@
-# Terraform DigitalOcean Infrastructure
 
 Este projeto utiliza Terraform para provisionar e gerenciar a infraestrutura na DigitalOcean. Ele inclui a criação de droplets, balanceadores de carga, firewalls, registros DNS e VPCs.
 
@@ -31,7 +30,7 @@ Este projeto utiliza Terraform para provisionar e gerenciar a infraestrutura na 
     cd <NOME_DO_REPOSITORIO>
     ```
 
-2. Crie um arquivo [terraform.tfvars](http://_vscodecontentref_/0) com o seguinte conteúdo:
+2. Crie um arquivo [terraform.tfvars](http://_vscodecontentref_/2) com o seguinte conteúdo:
 
     ```tfvars
     do_token = "SEU_TOKEN_DA_API_DO_DIGITALOCEAN"
@@ -39,7 +38,14 @@ Este projeto utiliza Terraform para provisionar e gerenciar a infraestrutura na 
     certificate_name = "NOME_DO_CERTIFICADO"
     ```
 
-3. Escolha o ambiente desejado (`env-tst.tfvars`, [env-stg.tfvars](http://_vscodecontentref_/1), [env-prd.tfvars](http://_vscodecontentref_/2)) e ajuste as variáveis conforme necessário.
+3. Escolha o ambiente desejado (`env-tst.tfvars`, [env-stg.tfvars](http://_vscodecontentref_/3), [env-prd.tfvars](http://_vscodecontentref_/4)) e ajuste as variáveis conforme necessário.
+
+4. Utilize os arquivos de exemplo [backend.tf.example](http://_vscodecontentref_/5) e [terraform.tfvars.example](http://_vscodecontentref_/6) como referência para criar seus próprios arquivos [backend.tf](http://_vscodecontentref_/7) e [terraform.tfvars](http://_vscodecontentref_/8). Renomeie os arquivos de exemplo e ajuste as configurações conforme necessário:
+
+    ```sh
+    cp backend.tf.example backend.tf
+    cp terraform.tfvars.example terraform.tfvars
+    ```
 
 ## Uso
 

@@ -1,0 +1,9 @@
+terraform {
+  backend "s3" {
+    bucket         = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    key            = "xxxxxxxxxxxxxxxxxx"
+    region         = "aws-region"
+    encrypt        = true
+    dynamodb_table = "xxxxxxxxxxxxxxxxxx"
+  }
+}

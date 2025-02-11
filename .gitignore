@@ -1,3 +1,7 @@
-.terraform*
-backend.tf
+.terraform
+.terraform.lock.hcl
 terraform.tfvars
+backend.tf
+
+
+

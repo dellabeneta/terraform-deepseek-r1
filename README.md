@@ -1,86 +1,133 @@
+# Terraform Deepseek R1 - Infraestrutura como Código na DigitalOcean
 
-Este projeto utiliza Terraform para provisionar e gerenciar a infraestrutura na DigitalOcean. Ele inclui a criação de droplets, balanceadores de carga, firewalls, registros DNS e VPCs.
-
-## Estrutura do Projeto
-
-- `backend.tf`: Configuração do backend para armazenar o estado do Terraform no S3.
-- `provider.tf`: Configuração do provedor DigitalOcean.
-- `variables.tf`: Definição das variáveis utilizadas no projeto.
-- `outputs.tf`: Definição das saídas do Terraform.
-- `network.tf`: Configuração da VPC.
-- `droplet.tf`: Configuração dos droplets.
-- `load-balancer.tf`: Configuração do balanceador de carga.
-- `firewall.tf`: Configuração do firewall.
-- `records.tf`: Configuração dos registros DNS.
-- `ssh-key.tf`: Configuração da chave SSH.
-- `env-tst.tfvars`, `env-stg.tfvars`, `env-prd.tfvars`: Arquivos de variáveis para diferentes ambientes (teste, staging, produção).
+## Visão Geral
+Este projeto Terraform provisiona uma infraestrutura completa na DigitalOcean incluindo:
+- Droplets Ubuntu com Nginx pré-configurado
+- Balanceador de carga com HTTPS
+- Firewall de segurança
+- VPC (Rede Privada)
+- Registros DNS
+- Gerenciamento de chaves SSH
 
 ## Pré-requisitos
+- [Terraform ≥ 1.5.0](https://www.terraform.io/downloads)
+- Conta na [DigitalOcean](https://cloud.digitalocean.com)
+- Token de API DO (com permissões de leitura/escrita)
+- Chave SSH pública gerada localmente
 
-- [Terraform](https://www.terraform.io/downloads.html) instalado.
-- Token da API do DigitalOcean.
-- Chave SSH pública para acesso aos droplets.
+## Configuração Inicial
+1. **Clone o repositório**:
+```bash
+git clone https://github.com/dellabeneta/terraform-deepseek-r1.git
+cd terraform-deepseek-r1
+```
 
-## Configuração
+2. **Configure o backend (S3):**
+Edite o `backend.tf` com seus dados da AWS:
+```hcl
+terraform {
+  backend "s3" {
+    bucket         = "seu-bucket-s3"
+    key            = "terraform.tfstate"
+    region         = "sa-east-1"
+    encrypt        = true
+    dynamodb_table = "sua-tabela-dynamodb"
+  }
+}
+```
 
-1. Clone o repositório:
+3. **Configure as variáveis básicas**:
+Crie um `terraform.tfvars` com:
+```hcl
+do_token = "seu_token_da_do"  # Substitua pelo seu token real
+domain_name = "seusite.com"
+certificate_name = "nome-do-certificado"
+```
 
-    ```sh
-    git clone <URL_DO_REPOSITORIO>
-    cd <NOME_DO_REPOSITORIO>
-    ```
+## Trabalhando com Ambientes
+O projeto usa arquivos `.tfvars` para diferentes ambientes:
 
-2. Crie um arquivo [terraform.tfvars](http://_vscodecontentref_/2) com o seguinte conteúdo:
+### 1. Ambiente de Teste (`env-tst.tfvars`)
+```hcl
+env_prefix    = "tst"
+env_region    = "nyc3"
+droplet_count = 2
+droplet_image = "ubuntu-24-04-x64"
+droplet_size  = "s-2vcpu-2gb"
+...
+```
 
-    ```tfvars
-    do_token = "SEU_TOKEN_DA_API_DO_DIGITALOCEAN"
-    domain_name = "SEU_DOMINIO"
-    certificate_name = "NOME_DO_CERTIFICADO"
-    ```
+### 2. Ambiente Staging (`env-stg.tfvars`)
+```hcl
+env_prefix    = "stg"
+env_region    = "nyc1"
+droplet_count = 2
+...
+```
 
-3. Escolha o ambiente desejado (`env-tst.tfvars`, [env-stg.tfvars](http://_vscodecontentref_/3), [env-prd.tfvars](http://_vscodecontentref_/4)) e ajuste as variáveis conforme necessário.
+### 3. Ambiente Produção (`env-prd.tfvars`)
+```hcl
+env_prefix    = "prd"
+env_region    = "sfo2"
+droplet_count = 4
+...
+```
 
-4. Utilize os arquivos de exemplo [backend.tf.example](http://_vscodecontentref_/5) e [terraform.tfvars.example](http://_vscodecontentref_/6) como referência para criar seus próprios arquivos [backend.tf](http://_vscodecontentref_/7) e [terraform.tfvars](http://_vscodecontentref_/8). Renomeie os arquivos de exemplo e ajuste as configurações conforme necessário:
+## Fluxo de Trabalho
+Para aplicar a configuração:
 
-    ```sh
-    cp backend.tf.example backend.tf
-    cp terraform.tfvars.example terraform.tfvars
-    ```
+```bash
+# Inicialize o Terraform
+terraform init
 
-## Uso
+# Para ambiente de teste
+terraform plan -var-file="env-tst.tfvars"
+terraform apply -var-file="env-tst.tfvars"
 
-1. Inicialize o Terraform:
+# Para produção
+terraform plan -var-file="env-prd.tfvars"
+terraform apply -var-file="env-prd.tfvars"
+```
 
-    ```sh
-    terraform init
-    ```
+## Destruindo a Infraestrutura
+```bash
+terraform destroy -var-file="env-<AMBIENTE>.tfvars"
+```
 
-2. Visualize o plano de execução:
+## Estrutura de Arquivos
+```
+della@ubuntu:~/projetos/terraform-deepseek-r1$ tree
+.
+├── backend.tf
+├── backend.tf.example
+├── droplet.tf
+├── env-prd.tfvars
+├── env-stg.tfvars
+├── env-tst.tfvars
+├── firewall.tf
+├── load-balancer.tf
+├── network.tf
+├── outputs.tf
+├── provider.tf
+├── README.md
+├── README.md.OLD
+├── records.tf
+├── ssh-key.tf
+├── terraform.tfvars
+├── terraform.tfvars.example
+└── variables.tf
 
-    ```sh
-    terraform plan -var-file=env-tst.tfvars
-    ```
+1 directory, 18 files
+```
 
-3. Aplique o plano:
-
-    ```sh
-    terraform apply -var-file=env-tst.tfvars
-    ```
-
-4. Para destruir a infraestrutura:
-
-    ```sh
-    terraform destroy -var-file=env-tst.tfvars
-    ```
-
-## Saídas
-
-- `droplet_ips`: Mapa que associa o nome de cada droplet ao seu endereço IPv4 público.
-- `vpc_ip_range`: Faixa de IP da VPC.
-- `ssh_key_fingerprint`: Impressão digital da chave SSH registrada.
-- `load_balancer_pip`: Endereço IP público do load balancer.
-- `record_name`: Nome do registro A no DNS.
-
-## Licença
-
-Este projeto está licenciado sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
+## Segurança Importante
+- **NUNCA** comitar arquivos com:
+  - Tokens de API (`*.tfvars`)
+  - Chaves privadas SSH
+  - Dados sensíveis
+- Mantenha seu `.gitignore` atualizado com:
+```
+.terraform
+*.tfvars
+*.tfstate*
+```

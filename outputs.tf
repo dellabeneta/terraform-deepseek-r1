@@ -1,3 +1,5 @@
+
+
 output "droplet_ips" {
   description = "Mapa que associa o nome de cada droplet ao seu endereço IPv4 público"
   value       = { for d in digitalocean_droplet.web_droplet : d.name => d.ipv4_address }
@@ -19,7 +21,7 @@ output "load_balancer_pip" {
   value       = digitalocean_loadbalancer.web_lb.ip
 }
 
-output "record_name" {
-  description = "Nome do registro A no DNS"
-  value       = digitalocean_record.deepseek.fqdn
-}
+# output "record_name" {
+#   description = "Nome do registro A no DNS"
+#   value       = digitalocean_record.deepseek.fqdn
+# }

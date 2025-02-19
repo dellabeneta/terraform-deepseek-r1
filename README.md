@@ -1,6 +1,6 @@
 # Terraform Deepseek R1 - Infraestrutura como Código na DigitalOcean
 
-  ![Diagrama da Infraestrutura](assets/dpr1.jpg)
+  ![Diagrama da Infraestrutura](assets/deepseek.jpg)
 
 ## Visão Geral
 Este projeto Terraform provisiona uma infraestrutura completa na DigitalOcean incluindo:

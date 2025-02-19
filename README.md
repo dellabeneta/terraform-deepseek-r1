@@ -1,5 +1,7 @@
 # Terraform Deepseek R1 - Infraestrutura como Código na DigitalOcean
 
+  ![Diagrama da Infraestrutura](assets/dpr1.jpg)
+
 ## Visão Geral
 Este projeto Terraform provisiona uma infraestrutura completa na DigitalOcean incluindo:
 - Droplets Ubuntu com Nginx pré-configurado
@@ -130,4 +132,3 @@ della@ubuntu:~/projetos/terraform-deepseek-r1$ tree
 .terraform
 *.tfvars
 *.tfstate*
-```

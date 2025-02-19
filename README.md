@@ -144,6 +144,9 @@ della@ubuntu:~/projetos/terraform-deepseek-r1$ tree
 1 directory, 18 files
 ```
 
+## Visualizando a Infraestrutura
+![infra](assets/infra.svg)
+
 ## Segurança Importante
 - **NUNCA** comitar arquivos com:
   - Tokens de API (`*.tfvars`)
